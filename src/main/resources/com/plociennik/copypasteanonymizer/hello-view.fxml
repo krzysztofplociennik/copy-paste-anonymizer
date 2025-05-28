@@ -9,7 +9,7 @@
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Label?>
 <BorderPane xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml"
-            fx:controller="com.plociennik.copypasteanonymizer.HelloController">
+            fx:controller="com.plociennik.copypasteanonymizer.controller.MainController">
 <center>
     <ScrollPane fitToWidth="true">
         <VBox fx:id="pairsContainer" spacing="10"></VBox>

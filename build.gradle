@@ -26,7 +26,7 @@ tasks.withType(JavaCompile) {
 
 application {
     mainModule = 'com.plociennik.copypasteanonymizer'
-    mainClass = 'com.plociennik.copypasteanonymizer.HelloApplication'
+    mainClass = 'com.plociennik.copypasteanonymizer.CopyPasteAnonymizerApplication'
 }
 
 javafx {
@@ -39,6 +39,11 @@ dependencies {
 
     testImplementation("org.junit.jupiter:junit-jupiter-api:${junitVersion}")
     testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:${junitVersion}")
+    implementation 'net.java.dev.jna:jna:5.13.0'
+    implementation 'net.java.dev.jna:jna-platform:5.13.0'
+
+    compileOnly 'org.projectlombok:lombok:1.18.30'
+    annotationProcessor 'org.projectlombok:lombok:1.18.30'
 }
 
 test {
