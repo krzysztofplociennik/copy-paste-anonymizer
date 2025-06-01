@@ -8,6 +8,7 @@ module com.plociennik.copypasteanonymizer {
     requires com.sun.jna;
     requires static lombok;
     requires jdk.compiler;
+    requires org.apache.commons.lang3;
 
     opens com.plociennik.copypasteanonymizer to javafx.fxml;
     exports com.plociennik.copypasteanonymizer;

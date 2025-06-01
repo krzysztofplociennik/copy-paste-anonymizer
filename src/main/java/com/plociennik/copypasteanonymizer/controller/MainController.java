@@ -17,6 +17,7 @@ import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import javafx.util.Duration;
 import javafx.util.Pair;
+import org.apache.commons.lang3.StringUtils;
 
 import java.awt.*;
 import java.awt.datatransfer.Clipboard;
@@ -210,11 +211,22 @@ public class MainController {
 
         String result = input;
         for (Pair<String, String> pair : replacementPairs) {
-            if (!pair.getKey().isEmpty()) {
+            String key = pair.getKey();
+            String value = pair.getValue();
+
+            boolean leftFound = StringUtils.isNotBlank(key) && input.contains(key);
+            boolean rightFound = StringUtils.isNotBlank(value) && input.contains(value);
+            if (leftFound) {
                 String oldResult = result;
-                result = result.replace(pair.getKey(), pair.getValue());
+                result = result.replace(key, value);
                 if (!oldResult.equals(result)) {
-                    System.out.println("Applied replacement: '" + pair.getKey() + "' -> '" + pair.getValue() + "'");
+                    System.out.println("Applied replacement: '" + key + "' -> '" + value + "'");
+                }
+            } else if (rightFound) {
+                String oldResult = result;
+                result = result.replace(value, key);
+                if (!oldResult.equals(result)) {
+                    System.out.println("Applied replacement: '" + value + "' -> '" + key + "'");
                 }
             }
         }
