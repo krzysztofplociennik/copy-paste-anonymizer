@@ -52,10 +52,10 @@ test {
 }
 
 jlink {
-    imageZip = project.file("${buildDir}/distributions/app-${javafx.platform.classifier}.zip")
+    imageZip = project.file("${buildDir}/distributions/copy paste anonymizer-${javafx.platform.classifier}.zip")
     options = ['--strip-debug', '--compress', '2', '--no-header-files', '--no-man-pages']
     launcher {
-        name = 'app'
+        name = 'copy paste anonymizer'
     }
 }
 

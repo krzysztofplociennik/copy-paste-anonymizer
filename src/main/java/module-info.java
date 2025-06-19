@@ -4,8 +4,6 @@ module com.plociennik.copypasteanonymizer {
 
     requires org.controlsfx.controls;
     requires java.desktop;
-    requires com.sun.jna.platform;
-    requires com.sun.jna;
     requires static lombok;
     requires jdk.compiler;
     requires org.apache.commons.lang3;
