@@ -57,14 +57,18 @@ public class MainController {
 
     private void addPair(String key, String value) {
         HBox row = new HBox(10);
+        row.getStyleClass().add("pair-row");
 
         TextField keyField = new TextField(key);
         keyField.setPromptText("Key");
+        keyField.getStyleClass().add("text-field");
 
         TextField valueField = new TextField(value);
         valueField.setPromptText("Value");
+        valueField.getStyleClass().add("text-field");
 
         Button removeBtn = new Button("❌");
+        removeBtn.getStyleClass().addAll("button", "remove-button");
         removeBtn.setOnAction(e -> {
             pairsContainer.getChildren().remove(row);
             showStatus("Removed a pair.");

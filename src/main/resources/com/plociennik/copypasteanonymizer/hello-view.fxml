@@ -9,22 +9,23 @@
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Label?>
 <BorderPane xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml"
-            fx:controller="com.plociennik.copypasteanonymizer.controller.MainController">
+            fx:controller="com.plociennik.copypasteanonymizer.controller.MainController"
+            styleClass="root">
 <center>
-    <ScrollPane fitToWidth="true">
-        <VBox fx:id="pairsContainer" spacing="10"></VBox>
+    <ScrollPane fitToWidth="true" styleClass="scroll-pane">
+        <VBox fx:id="pairsContainer" spacing="10" styleClass="content"></VBox>
     </ScrollPane>
 </center>
 <bottom>
-    <VBox spacing="5">
+    <VBox spacing="5" styleClass="bottom-panel">
         <HBox spacing="10" alignment="center">
             <padding>
                 <Insets top="10" right="10" bottom="10" left="10"/>
             </padding>
-            <Button text="➕ Add a new pair" onAction="#handleAddPair"/>
-            <Button text="💾 Save pairs" onAction="#handleSavePairs"/>
+            <Button text="➕ Add a new pair" onAction="#handleAddPair" styleClass="button,add-button"/>
+            <Button text="💾 Save pairs" onAction="#handleSavePairs" styleClass="button,save-button"/>
         </HBox>
-        <Label fx:id="statusLabel" text="" style="-fx-text-fill: gray; -fx-font-size: 11px;" />
+        <Label fx:id="statusLabel" styleClass="label" />
     </VBox>
 </bottom>
 </BorderPane>

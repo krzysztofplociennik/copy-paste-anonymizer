@@ -17,6 +17,11 @@ public class StageProcessor {
         stage.setTitle("Copy-Paste Anonymizer");
         stage.setScene(scene);
         stage.setIconified(false);
+
+        scene.getStylesheets().add(
+                CopyPasteAnonymizerApplication.class.getResource("style.css").toExternalForm()
+        );
+
         setOnCloseRequest(stage, fxmlLoader);
     }
 
