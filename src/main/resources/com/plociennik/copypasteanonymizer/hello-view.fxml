@@ -5,27 +5,73 @@
 <?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.HBox?>
-
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Label?>
+<?import javafx.scene.control.RadioButton?>
+<?import javafx.scene.layout.Region?>
+
 <BorderPane xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml"
             fx:controller="com.plociennik.copypasteanonymizer.controller.MainController"
             styleClass="root">
-<center>
-    <ScrollPane fitToWidth="true" styleClass="scroll-pane">
-        <VBox fx:id="pairsContainer" spacing="10" styleClass="content"></VBox>
-    </ScrollPane>
-</center>
-<bottom>
-    <VBox spacing="5" styleClass="bottom-panel">
-        <HBox spacing="10" alignment="center">
-            <padding>
-                <Insets top="10" right="10" bottom="10" left="10"/>
-            </padding>
-            <Button text="➕ Add a new pair" onAction="#handleAddPair" styleClass="button,add-button"/>
-            <Button text="💾 Save pairs" onAction="#handleSavePairs" styleClass="button,save-button"/>
-        </HBox>
-        <Label fx:id="statusLabel" styleClass="label" />
-    </VBox>
-</bottom>
+    <top>
+        <VBox styleClass="header-panel">
+            <HBox fx:id="headerArea" styleClass="header-area" alignment="CENTER_LEFT" spacing="20">
+                <padding>
+                    <Insets top="15" right="15" bottom="15" left="15"/>
+                </padding>
+
+                <!-- Replacement mode controls -->
+                <VBox spacing="5" styleClass="mode-controls">
+                    <Label text="Replacement Mode:" styleClass="mode-label"/>
+                    <VBox spacing="8">
+                        <RadioButton fx:id="leftToRightMode" text="Left → Right" styleClass="mode-radio"/>
+                        <RadioButton fx:id="rightToLeftMode" text="Right → Left" styleClass="mode-radio"/>
+                        <RadioButton fx:id="bidirectionalMode" text="Bidirectional" styleClass="mode-radio" selected="true"/>
+                    </VBox>
+                </VBox>
+
+                <Region HBox.hgrow="ALWAYS"/>
+
+                <!-- Monitoring control -->
+                <VBox spacing="5" styleClass="monitoring-controls" alignment="TOP_CENTER">
+                    <Label text="Monitoring:" styleClass="mode-label"/>
+                    <Button fx:id="monitoringToggle" text="Pause" styleClass="monitoring-button" onAction="#toggleMonitoring"/>
+                </VBox>
+
+            </HBox>
+        </VBox>
+    </top>
+
+    <!-- Replacement pairs -->
+    <center>
+        <ScrollPane fitToWidth="true" styleClass="scroll-pane">
+            <VBox fx:id="pairsContainer" spacing="10" styleClass="content">
+                <padding>
+                    <Insets top="15" right="15" bottom="15" left="15"/>
+                </padding>
+            </VBox>
+        </ScrollPane>
+    </center>
+
+    <bottom>
+        <VBox styleClass="bottom-panel">
+            <!-- Add/Save buttons -->
+            <HBox spacing="10" alignment="center" styleClass="button-area">
+                <padding>
+                    <Insets top="15" right="15" bottom="10" left="15"/>
+                </padding>
+                <Button text="➕ Add Pair" onAction="#handleAddPair" styleClass="button,add-button"/>
+                <Button text="💾 Save Pairs" onAction="#handleSavePairs" styleClass="button,save-button"/>
+            </HBox>
+
+            <!-- Footer notification area -->
+            <HBox fx:id="notificationFooter" styleClass="notification-footer" alignment="CENTER_LEFT">
+                <padding>
+                    <Insets top="8" right="15" bottom="8" left="15"/>
+                </padding>
+                <Label fx:id="notificationIcon" text="ℹ️" styleClass="notification-icon"/>
+                <Label fx:id="notificationText" text="Ready" styleClass="notification-text"/>
+            </HBox>
+        </VBox>
+    </bottom>
 </BorderPane>

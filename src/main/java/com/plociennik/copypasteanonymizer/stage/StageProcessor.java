@@ -18,6 +18,9 @@ public class StageProcessor {
         stage.setScene(scene);
         stage.setIconified(false);
 
+        stage.setMinWidth(600);
+        stage.setMinHeight(400);
+
         scene.getStylesheets().add(
                 CopyPasteAnonymizerApplication.class.getResource("style.css").toExternalForm()
         );

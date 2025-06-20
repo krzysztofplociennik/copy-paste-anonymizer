@@ -1,13 +1,9 @@
-/* Modern JavaFX Styling for Copy-Paste Anonymizer */
-
-/* Root styling - applies to entire application */
 .root {
     -fx-background-color: #f8f9fa;
-    -fx-font-family: "Segoe UI", "San Francisco", "Helvetica Neue", Arial, sans-serif;
+    -fx-font-family: "Segoe UI", "Segoe UI Symbol", "San Francisco", "Helvetica Neue", Arial, sans-serif;
     -fx-font-size: 14px;
 }
 
-/* Main button styling */
 .button {
     -fx-background-color: #007bff;
     -fx-text-fill: white;
@@ -28,7 +24,6 @@
     -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.2), 1, 0, 0, 0);
 }
 
-/* Text field styling */
 .text-field {
     -fx-background-color: white;
     -fx-border-color: #ced4da;
@@ -44,20 +39,53 @@
     -fx-effect: dropshadow(gaussian, rgba(0,123,255,0.25), 4, 0, 0, 0);
 }
 
-/* Label styling */
 .label {
     -fx-text-fill: #495057;
     -fx-font-weight: 500;
 }
 
-/* Status label specific styling */
-#statusLabel {
-    -fx-text-fill: #6c757d;
-    -fx-font-size: 12px;
-    -fx-padding: 5px 10px;
+.notification-footer {
+    -fx-background-color: #f8f9fa;
+    -fx-border-color: #dee2e6;
+    -fx-border-width: 1px 0 0 0;
+    -fx-min-height: 35px;
 }
 
-/* Container styling */
+.notification-footer.info {
+    -fx-background-color: #e3f2fd;
+    -fx-border-color: #2196f3;
+}
+
+.notification-footer.success {
+    -fx-background-color: #e8f5e8;
+    -fx-border-color: #4caf50;
+}
+
+.notification-footer.warning {
+    -fx-background-color: #fff3cd;
+    -fx-border-color: #ffc107;
+}
+
+.notification-footer.error {
+    -fx-background-color: #f8d7da;
+    -fx-border-color: #dc3545;
+}
+
+.notification-icon {
+    -fx-font-size: 14px;
+    -fx-padding: 0 8px 0 0;
+}
+
+.notification-text {
+    -fx-font-size: 13px;
+    -fx-text-fill: #2c3e50;
+    -fx-font-weight: 500;
+}
+
+.button-area {
+    -fx-background-color: white;
+}
+
 .scroll-pane {
     -fx-background-color: transparent;
     -fx-border-color: transparent;
@@ -74,13 +102,11 @@
     -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.05), 5, 0, 0, 2);
 }
 
-/* Pair row styling */
 .hbox {
     -fx-spacing: 10px;
     -fx-padding: 5px 0px;
 }
 
-/* Remove button specific styling */
 .button.remove-button {
     -fx-background-color: #dc3545;
     -fx-padding: 6px 10px;
@@ -91,7 +117,6 @@
     -fx-background-color: #c82333;
 }
 
-/* Add button specific styling */
 .button.add-button {
     -fx-background-color: #28a745;
 }
@@ -100,7 +125,6 @@
     -fx-background-color: #218838;
 }
 
-/* Save button specific styling */
 .button.save-button {
     -fx-background-color: #ffc107;
     -fx-text-fill: #212529;
