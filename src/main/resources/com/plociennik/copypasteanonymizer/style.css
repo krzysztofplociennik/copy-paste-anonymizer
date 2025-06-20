@@ -140,3 +140,21 @@
    -fx-min-width: 140px;
    -fx-min-height: 50px;
 }
+
+.text-field.error {
+    -fx-border-color: #dc3545;
+    -fx-border-width: 2px;
+    -fx-background-color: #fff5f5;
+}
+
+.error-message {
+    -fx-text-fill: #dc3545;
+    -fx-font-size: 11px;
+    -fx-padding: 2px 0 0 0;
+}
+
+.pair-row.has-error {
+    -fx-background-color: #fff5f5;
+    -fx-background-radius: 4px;
+    -fx-padding: 8px;
+}

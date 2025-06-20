@@ -128,35 +128,100 @@ public class MainController {
 
     @FXML
     private void handleAddPair() {
+        if (!validatePairs()) {
+            showNotification("Please fix the errors before adding a new pair.", NotificationType.ERROR);
+            return;
+        }
+
         addPair("", "");
         showNotification("Added a new empty pair.", NotificationType.INFO);
     }
 
     private void addPair(String key, String value) {
+        VBox pairContainer = new VBox(5);
+        pairContainer.getStyleClass().add("pair-container");
+
         HBox row = new HBox(10);
         row.getStyleClass().add("pair-row");
 
         TextField keyField = new TextField(key);
-        keyField.setPromptText("Key");
+        keyField.setPromptText("Original Text");
         keyField.getStyleClass().add("text-field");
 
         TextField valueField = new TextField(value);
-        valueField.setPromptText("Value");
+        valueField.setPromptText("Replacement Text");
         valueField.getStyleClass().add("text-field");
 
         Button removeBtn = new Button("❌");
         removeBtn.getStyleClass().addAll("button", "remove-button");
         removeBtn.setOnAction(e -> {
-            pairsContainer.getChildren().remove(row);
+            pairsContainer.getChildren().remove(pairContainer);
             showNotification("Removed a pair.", NotificationType.WARNING);
         });
 
         row.getChildren().addAll(keyField, valueField, removeBtn);
-        pairsContainer.getChildren().add(row);
+
+        Label errorLabel = new Label();
+        errorLabel.getStyleClass().add("error-message");
+        errorLabel.setVisible(false);
+        errorLabel.setManaged(false);
+
+        pairContainer.getChildren().addAll(row, errorLabel);
+        pairsContainer.getChildren().add(pairContainer);
+    }
+
+    private boolean validatePairs() {
+        boolean hasErrors = false;
+
+        for (var node : pairsContainer.getChildren()) {
+            if (node instanceof VBox pairContainer) {
+                HBox row = (HBox) pairContainer.getChildren().get(0);
+                Label errorLabel = (Label) pairContainer.getChildren().get(1);
+
+                List<TextField> textFields = row.getChildren().stream()
+                        .filter(n -> n instanceof TextField)
+                        .map(n -> (TextField) n)
+                        .toList();
+
+                if (textFields.size() >= 2) {
+                    TextField keyField = textFields.get(0);
+                    TextField valueField = textFields.get(1);
+
+                    String key = keyField.getText().trim();
+                    String value = valueField.getText().trim();
+
+                    keyField.getStyleClass().remove("error");
+                    valueField.getStyleClass().remove("error");
+                    row.getStyleClass().remove("has-error");
+                    errorLabel.setVisible(false);
+                    errorLabel.setManaged(false);
+
+                    boolean isAnythingBlank = key.isBlank() || value.isBlank();
+                    if (isAnythingBlank) {
+                        hasErrors = true;
+
+                        if (key.isEmpty()) keyField.getStyleClass().add("error");
+                        if (value.isEmpty()) valueField.getStyleClass().add("error");
+
+                        row.getStyleClass().add("has-error");
+                        errorLabel.setText("Both fields must be filled!");
+                        errorLabel.setVisible(true);
+                        errorLabel.setManaged(true);
+                    }
+                }
+            }
+        }
+
+        return !hasErrors;
     }
 
     @FXML
     public void handleSavePairs() {
+        if (!validatePairs()) {
+            showNotification("Please fix the errors before saving.", NotificationType.ERROR);
+            return;
+        }
+
         replacementPairs.clear();
 
         List<String> pairs = new ArrayList<>();
