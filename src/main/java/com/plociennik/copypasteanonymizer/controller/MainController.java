@@ -28,7 +28,9 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.nio.file.Files;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.atomic.AtomicReference;
 
 public class MainController {
@@ -128,7 +130,7 @@ public class MainController {
 
     @FXML
     private void handleAddPair() {
-        if (!validatePairs()) {
+        if (!arePairsValid()) {
             showNotification("Please fix the errors before adding a new pair.", NotificationType.ERROR);
             return;
         }
@@ -170,10 +172,38 @@ public class MainController {
         pairsContainer.getChildren().add(pairContainer);
     }
 
-    private boolean validatePairs() {
+    private boolean arePairsValid() {
         boolean hasErrors = false;
+        Map<String, List<String>> valueLocations = new HashMap<>();
 
-        for (var node : pairsContainer.getChildren()) {
+        for (int i = 0; i < pairsContainer.getChildren().size(); i++) {
+            var node = pairsContainer.getChildren().get(i);
+            if (node instanceof VBox pairContainer) {
+                HBox row = (HBox) pairContainer.getChildren().getFirst();
+
+                List<TextField> textFields = row.getChildren().stream()
+                        .filter(n -> n instanceof TextField)
+                        .map(n -> (TextField) n)
+                        .toList();
+
+                if (textFields.size() >= 2) {
+                    String key = textFields.get(0).getText().trim();
+                    String value = textFields.get(1).getText().trim();
+
+                    if (!key.isEmpty()) {
+                        valueLocations.computeIfAbsent(key, k -> new ArrayList<>())
+                                .add("Pair " + (i + 1) + " (left)");
+                    }
+                    if (!value.isEmpty()) {
+                        valueLocations.computeIfAbsent(value, k -> new ArrayList<>())
+                                .add("Pair " + (i + 1) + " (right)");
+                    }
+                }
+            }
+        }
+
+        for (int i = 0; i < pairsContainer.getChildren().size(); i++) {
+            var node = pairsContainer.getChildren().get(i);
             if (node instanceof VBox pairContainer) {
                 HBox row = (HBox) pairContainer.getChildren().get(0);
                 Label errorLabel = (Label) pairContainer.getChildren().get(1);
@@ -196,15 +226,49 @@ public class MainController {
                     errorLabel.setVisible(false);
                     errorLabel.setManaged(false);
 
-                    boolean isAnythingBlank = key.isBlank() || value.isBlank();
-                    if (isAnythingBlank) {
+                    String errorMessage = "";
+
+                    boolean isAnyFieldBlank = StringUtils.isBlank(key) || StringUtils.isBlank(value);
+                    if (isAnyFieldBlank) {
                         hasErrors = true;
+                        errorMessage = "Both fields must be filled or both must be empty";
 
                         if (key.isEmpty()) keyField.getStyleClass().add("error");
                         if (value.isEmpty()) valueField.getStyleClass().add("error");
+                    }
 
+                    else if (!key.isEmpty() && !value.isEmpty()) {
+                        boolean keyDuplicate = valueLocations.get(key).size() > 1;
+                        boolean valueDuplicate = valueLocations.get(value).size() > 1;
+
+                        if (keyDuplicate || valueDuplicate) {
+                            hasErrors = true;
+
+                            if (keyDuplicate && valueDuplicate) {
+                                errorMessage = "Both values are already used elsewhere";
+                                keyField.getStyleClass().add("error");
+                                valueField.getStyleClass().add("error");
+                            } else if (keyDuplicate) {
+                                int finalI = i;
+                                errorMessage = "Left value '" + key + "' is already used in: " +
+                                        String.join(", ", valueLocations.get(key).stream()
+                                                .filter(loc -> !loc.equals("Pair " + (finalI + 1) + " (left)"))
+                                                .toList());
+                                keyField.getStyleClass().add("error");
+                            } else {
+                                int finalI1 = i;
+                                errorMessage = "Right value '" + value + "' is already used in: " +
+                                        String.join(", ", valueLocations.get(value).stream()
+                                                .filter(loc -> !loc.equals("Pair " + (finalI1 + 1) + " (right)"))
+                                                .toList());
+                                valueField.getStyleClass().add("error");
+                            }
+                        }
+                    }
+
+                    if (!errorMessage.isEmpty()) {
                         row.getStyleClass().add("has-error");
-                        errorLabel.setText("Both fields must be filled!");
+                        errorLabel.setText(errorMessage);
                         errorLabel.setVisible(true);
                         errorLabel.setManaged(true);
                     }
@@ -217,7 +281,7 @@ public class MainController {
 
     @FXML
     public void handleSavePairs() {
-        if (!validatePairs()) {
+        if (!arePairsValid()) {
             showNotification("Please fix the errors before saving.", NotificationType.ERROR);
             return;
         }
