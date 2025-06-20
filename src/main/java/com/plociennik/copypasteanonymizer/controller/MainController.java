@@ -114,12 +114,12 @@ public class MainController {
         isMonitoringPaused = !isMonitoringPaused;
 
         if (isMonitoringPaused) {
-            monitoringToggle.setText("▶️ Resume");
+            monitoringToggle.setText("Resume");
             monitoringToggle.getStyleClass().removeAll("active");
             monitoringToggle.getStyleClass().add("paused");
             showNotification("Clipboard monitoring paused", NotificationType.WARNING);
         } else {
-            monitoringToggle.setText("⏸️ Pause");
+            monitoringToggle.setText("Pause");
             monitoringToggle.getStyleClass().removeAll("paused");
             monitoringToggle.getStyleClass().add("active");
             showNotification("Clipboard monitoring resumed", NotificationType.SUCCESS);
