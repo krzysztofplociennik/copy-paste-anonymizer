@@ -130,7 +130,7 @@ public class MainController {
 
     @FXML
     private void handleAddPair() {
-        if (!arePairsValid()) {
+        if (arePairsNotValid()) {
             showNotification("Please fix the errors before adding a new pair.", NotificationType.ERROR);
             return;
         }
@@ -172,7 +172,7 @@ public class MainController {
         pairsContainer.getChildren().add(pairContainer);
     }
 
-    private boolean arePairsValid() {
+    private boolean arePairsNotValid() {
         boolean hasErrors = false;
         Map<String, List<String>> valueLocations = new HashMap<>();
 
@@ -276,12 +276,12 @@ public class MainController {
             }
         }
 
-        return !hasErrors;
+        return hasErrors;
     }
 
     @FXML
     public void handleSavePairs() {
-        if (!arePairsValid()) {
+        if (arePairsNotValid()) {
             showNotification("Please fix the errors before saving.", NotificationType.ERROR);
             return;
         }
