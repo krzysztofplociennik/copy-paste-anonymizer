@@ -1,24 +1,17 @@
 package com.plociennik.copypasteanonymizer.controller;
 
 import com.plociennik.copypasteanonymizer.clipboard.SimpleClipboardMonitor;
-import javafx.animation.PauseTransition;
 import javafx.application.Platform;
+import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
-import javafx.geometry.Rectangle2D;
-import javafx.scene.Scene;
+import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.HBox;
-import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
-import javafx.stage.Screen;
-import javafx.stage.Stage;
-import javafx.stage.StageStyle;
-import javafx.util.Duration;
 import javafx.util.Pair;
-import org.apache.commons.lang3.StringUtils;
 
 import java.awt.*;
 import java.awt.datatransfer.Clipboard;
@@ -28,9 +21,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.nio.file.Files;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.concurrent.atomic.AtomicReference;
 
 public class MainController {
@@ -66,6 +57,16 @@ public class MainController {
     private ToggleGroup replacementModeGroup;
     private boolean isMonitoringPaused = false;
 
+    private PairValidationService pairValidationService;
+    private ReplacementService replacementService;
+    private NotifyService notifyService;
+
+    public MainController() {
+        this.pairValidationService = new PairValidationService();
+        this.replacementService = new ReplacementService();
+        this.notifyService = new NotifyService();
+    }
+
 
     @FXML
     private void initialize() {
@@ -79,12 +80,12 @@ public class MainController {
         replacementModeGroup.selectedToggleProperty().addListener((obs, oldToggle, newToggle) -> {
             if (newToggle != null) {
                 ReplacementMode mode = getCurrentReplacementMode();
-                showNotification("Replacement mode: " + getModeDescription(mode), NotificationType.INFO);
+                this.notifyService.showNotification("Replacement mode: " + getModeDescription(mode), NotificationType.INFO, notificationFooter, notificationIcon, notificationText);
             }
         });
 
         handleLoadPairs();
-        showNotification("App started. Loaded saved pairs.", NotificationType.SUCCESS);
+        this.notifyService.showNotification("App started. Loaded saved pairs.", NotificationType.SUCCESS, notificationFooter, notificationIcon, notificationText);
         startClipboardMonitor();
     }
 
@@ -119,24 +120,25 @@ public class MainController {
             monitoringToggle.setText("Resume");
             monitoringToggle.getStyleClass().removeAll("active");
             monitoringToggle.getStyleClass().add("paused");
-            showNotification("Clipboard monitoring paused", NotificationType.WARNING);
+            this.notifyService.showNotification("Clipboard monitoring paused", NotificationType.WARNING, notificationFooter, notificationIcon, notificationText);
         } else {
             monitoringToggle.setText("Pause");
             monitoringToggle.getStyleClass().removeAll("paused");
             monitoringToggle.getStyleClass().add("active");
-            showNotification("Clipboard monitoring resumed", NotificationType.SUCCESS);
+            notifyService.showNotification("Clipboard monitoring resumed", NotificationType.SUCCESS, notificationFooter, notificationIcon, notificationText);
         }
     }
 
     @FXML
     private void handleAddPair() {
-        if (arePairsNotValid()) {
-            showNotification("Please fix the errors before adding a new pair.", NotificationType.ERROR);
+        boolean arePairsNotValid = this.pairValidationService.arePairsNotValid(pairsContainer);
+        if (arePairsNotValid) {
+            notifyService.showNotification("Please fix the errors before adding a new pair.", NotificationType.ERROR, notificationFooter, notificationIcon, notificationText);
             return;
         }
 
         addPair("", "");
-        showNotification("Added a new empty pair.", NotificationType.INFO);
+        notifyService.showNotification("Added a new empty pair.", NotificationType.INFO, notificationFooter, notificationIcon, notificationText);
     }
 
     private void addPair(String key, String value) {
@@ -158,7 +160,7 @@ public class MainController {
         removeBtn.getStyleClass().addAll("button", "remove-button");
         removeBtn.setOnAction(e -> {
             pairsContainer.getChildren().remove(pairContainer);
-            showNotification("Removed a pair.", NotificationType.WARNING);
+            notifyService.showNotification("Removed a pair.", NotificationType.WARNING, notificationFooter, notificationIcon, notificationText);
         });
 
         row.getChildren().addAll(keyField, valueField, removeBtn);
@@ -172,117 +174,11 @@ public class MainController {
         pairsContainer.getChildren().add(pairContainer);
     }
 
-    private boolean arePairsNotValid() {
-        boolean hasErrors = false;
-        Map<String, List<String>> valueLocations = new HashMap<>();
-
-        for (int i = 0; i < pairsContainer.getChildren().size(); i++) {
-            var node = pairsContainer.getChildren().get(i);
-            if (node instanceof VBox pairContainer) {
-                HBox row = (HBox) pairContainer.getChildren().getFirst();
-
-                List<TextField> textFields = row.getChildren().stream()
-                        .filter(n -> n instanceof TextField)
-                        .map(n -> (TextField) n)
-                        .toList();
-
-                if (textFields.size() >= 2) {
-                    String key = textFields.get(0).getText().trim();
-                    String value = textFields.get(1).getText().trim();
-
-                    if (!key.isEmpty()) {
-                        valueLocations.computeIfAbsent(key, k -> new ArrayList<>())
-                                .add("Pair " + (i + 1) + " (left)");
-                    }
-                    if (!value.isEmpty()) {
-                        valueLocations.computeIfAbsent(value, k -> new ArrayList<>())
-                                .add("Pair " + (i + 1) + " (right)");
-                    }
-                }
-            }
-        }
-
-        for (int i = 0; i < pairsContainer.getChildren().size(); i++) {
-            var node = pairsContainer.getChildren().get(i);
-            if (node instanceof VBox pairContainer) {
-                HBox row = (HBox) pairContainer.getChildren().get(0);
-                Label errorLabel = (Label) pairContainer.getChildren().get(1);
-
-                List<TextField> textFields = row.getChildren().stream()
-                        .filter(n -> n instanceof TextField)
-                        .map(n -> (TextField) n)
-                        .toList();
-
-                if (textFields.size() >= 2) {
-                    TextField keyField = textFields.get(0);
-                    TextField valueField = textFields.get(1);
-
-                    String key = keyField.getText().trim();
-                    String value = valueField.getText().trim();
-
-                    keyField.getStyleClass().remove("error");
-                    valueField.getStyleClass().remove("error");
-                    row.getStyleClass().remove("has-error");
-                    errorLabel.setVisible(false);
-                    errorLabel.setManaged(false);
-
-                    String errorMessage = "";
-
-                    boolean isAnyFieldBlank = StringUtils.isBlank(key) || StringUtils.isBlank(value);
-                    if (isAnyFieldBlank) {
-                        hasErrors = true;
-                        errorMessage = "Both fields must be filled or both must be empty";
-
-                        if (key.isEmpty()) keyField.getStyleClass().add("error");
-                        if (value.isEmpty()) valueField.getStyleClass().add("error");
-                    }
-
-                    else if (!key.isEmpty() && !value.isEmpty()) {
-                        boolean keyDuplicate = valueLocations.get(key).size() > 1;
-                        boolean valueDuplicate = valueLocations.get(value).size() > 1;
-
-                        if (keyDuplicate || valueDuplicate) {
-                            hasErrors = true;
-
-                            if (keyDuplicate && valueDuplicate) {
-                                errorMessage = "Both values are already used elsewhere";
-                                keyField.getStyleClass().add("error");
-                                valueField.getStyleClass().add("error");
-                            } else if (keyDuplicate) {
-                                int finalI = i;
-                                errorMessage = "Left value '" + key + "' is already used in: " +
-                                        String.join(", ", valueLocations.get(key).stream()
-                                                .filter(loc -> !loc.equals("Pair " + (finalI + 1) + " (left)"))
-                                                .toList());
-                                keyField.getStyleClass().add("error");
-                            } else {
-                                int finalI1 = i;
-                                errorMessage = "Right value '" + value + "' is already used in: " +
-                                        String.join(", ", valueLocations.get(value).stream()
-                                                .filter(loc -> !loc.equals("Pair " + (finalI1 + 1) + " (right)"))
-                                                .toList());
-                                valueField.getStyleClass().add("error");
-                            }
-                        }
-                    }
-
-                    if (!errorMessage.isEmpty()) {
-                        row.getStyleClass().add("has-error");
-                        errorLabel.setText(errorMessage);
-                        errorLabel.setVisible(true);
-                        errorLabel.setManaged(true);
-                    }
-                }
-            }
-        }
-
-        return hasErrors;
-    }
-
     @FXML
     public void handleSavePairs() {
-        if (arePairsNotValid()) {
-            showNotification("Please fix the errors before saving.", NotificationType.ERROR);
+        boolean arePairsValid = this.pairValidationService.arePairsNotValid(pairsContainer);
+        if (arePairsValid) {
+            notifyService.showNotification("Please fix the errors before saving.", NotificationType.ERROR, notificationFooter, notificationIcon, notificationText);
             return;
         }
 
@@ -291,19 +187,21 @@ public class MainController {
         List<String> pairs = new ArrayList<>();
 
         for (var pairRow : pairsContainer.getChildren()) {
-            if (pairRow instanceof HBox row) {
+            if (pairRow instanceof VBox row) {
+                ObservableList<Node> children = row.getChildren();
+                if (children.getFirst() instanceof HBox box) {
+                    List<TextField> textFields = box.getChildren().stream()
+                            .filter(n -> n instanceof TextField)
+                            .map(n -> (TextField) n)
+                            .toList();
 
-                List<TextField> textFields = row.getChildren().stream()
-                        .filter(n -> n instanceof TextField)
-                        .map(n -> (TextField) n)
-                        .toList();
-
-                if (textFields.size() >= 2) {
-                    String key = textFields.get(0).getText().trim();
-                    String value = textFields.get(1).getText().trim();
-                    if (!key.isEmpty() || !value.isEmpty()) {
-                        replacementPairs.add(new Pair<>(key, value));
-                        pairs.add(key + " = " + value);
+                    if (textFields.size() >= 2) {
+                        String key = textFields.get(0).getText().trim();
+                        String value = textFields.get(1).getText().trim();
+                        if (!key.isEmpty() || !value.isEmpty()) {
+                            replacementPairs.add(new Pair<>(key, value));
+                            pairs.add(key + " = " + value);
+                        }
                     }
                 }
             }
@@ -313,10 +211,10 @@ public class MainController {
             for (String pair : pairs) {
                 writer.println(pair);
             }
-            showNotification("Successfully saved " + pairs.size() + " pairs.", NotificationType.SUCCESS);;
+            notifyService.showNotification("Successfully saved " + pairs.size() + " pairs.", NotificationType.SUCCESS, notificationFooter, notificationIcon, notificationText);
         } catch (IOException e) {
             e.printStackTrace();
-            showNotification("Error saving pairs: " + e.getMessage(), NotificationType.ERROR);
+            notifyService.showNotification("Error saving pairs: " + e.getMessage(), NotificationType.ERROR, notificationFooter, notificationIcon, notificationText);
         }
     }
 
@@ -348,7 +246,7 @@ public class MainController {
     private void startClipboardMonitor() {
         clipboardMonitor = new SimpleClipboardMonitor(this::onClipboardChanged);
         clipboardMonitor.start();
-        showNotification("Clipboard monitoring started", NotificationType.SUCCESS);
+        notifyService.showNotification("Clipboard monitoring started", NotificationType.SUCCESS, notificationFooter, notificationIcon, notificationText);
     }
 
     private void onClipboardChanged(String content) {
@@ -363,7 +261,7 @@ public class MainController {
             return;
         }
 
-        String replacedContent = applyReplacements(content);
+        String replacedContent = this.replacementService.applyReplacements(content, getCurrentReplacementMode(), replacementPairs);
 
         if (!replacedContent.equals(content)) {
             System.out.println("Content will be replaced");
@@ -381,15 +279,15 @@ public class MainController {
                     clipboard.setContents(selection, null);
 
                     Platform.runLater(() -> {
-                        showNotification("Clipboard content anonymized", NotificationType.SUCCESS);
-                        showAnonymizationSuccessMessage();
+                        notifyService.showNotification("Clipboard content anonymized", NotificationType.SUCCESS, notificationFooter, notificationIcon, notificationText);
+                        notifyService.showAnonymizationSuccessMessage();
                     });
 
                     Thread.sleep(200);
 
                 } catch (Exception e) {
                     e.printStackTrace();
-                    Platform.runLater(() -> showNotification("Error updating clipboard", NotificationType.ERROR));
+                    Platform.runLater(() -> notifyService.showNotification("Error updating clipboard", NotificationType.ERROR, notificationFooter, notificationIcon, notificationText));
                 } finally {
                     clipboardMonitor.setProcessing(false);
                 }
@@ -404,149 +302,9 @@ public class MainController {
         }
     }
 
-    private String applyReplacements(String input) {
-        if (input == null || input.isEmpty()) {
-            return input;
-        }
-
-        String result = input;
-        ReplacementMode mode = getCurrentReplacementMode();
-
-        for (Pair<String, String> pair : replacementPairs) {
-            String key = pair.getKey();
-            String value = pair.getValue();
-
-            if (StringUtils.isBlank(key) || StringUtils.isBlank(value)) {
-                continue;
-            }
-
-            switch (mode) {
-                case LEFT_TO_RIGHT:
-                    if (input.contains(key)) {
-                        String oldResult = result;
-                        result = result.replace(key, value);
-                        if (!oldResult.equals(result)) {
-                            System.out.println("Applied LEFT→RIGHT replacement: '" + key + "' → '" + value + "'");
-                        }
-                    }
-                    break;
-
-                case RIGHT_TO_LEFT:
-                    if (input.contains(value)) {
-                        String oldResult = result;
-                        result = result.replace(value, key);
-                        if (!oldResult.equals(result)) {
-                            System.out.println("Applied RIGHT→LEFT replacement: '" + value + "' → '" + key + "'");
-                        }
-                    }
-                    break;
-
-                case BIDIRECTIONAL:
-                    boolean leftFound = input.contains(key);
-                    boolean rightFound = input.contains(value);
-
-                    if (leftFound) {
-                        String oldResult = result;
-                        result = result.replace(key, value);
-                        if (!oldResult.equals(result)) {
-                            System.out.println("Applied BIDIRECTIONAL replacement: '" + key + "' → '" + value + "'");
-                        }
-                    } else if (rightFound) {
-                        String oldResult = result;
-                        result = result.replace(value, key);
-                        if (!oldResult.equals(result)) {
-                            System.out.println("Applied BIDIRECTIONAL replacement: '" + value + "' → '" + key + "'");
-                        }
-                    }
-                    break;
-            }
-        }
-        return result;
-    }
-
-    private void showAnonymizationSuccessMessage() {
-        try {
-            Stage toastStage = new Stage();
-            toastStage.setResizable(false);
-            toastStage.initStyle(StageStyle.TRANSPARENT);
-            toastStage.setAlwaysOnTop(true);
-
-            Label label = new Label("Text anonymized");
-            label.setStyle("-fx-background-color: rgba(0,0,0,0.8); -fx-text-fill: white; -fx-padding: 10px; -fx-background-radius: 5;");
-            StackPane root = new StackPane(label);
-            root.setStyle("-fx-background-color: transparent;");
-
-            Scene scene = new Scene(root);
-            scene.setFill(null);
-            toastStage.setScene(scene);
-
-            Rectangle2D bounds = Screen.getPrimary().getVisualBounds();
-            toastStage.setX(bounds.getMaxX() - 250);
-            toastStage.setY(bounds.getMaxY() - 80);
-
-            toastStage.show();
-
-            PauseTransition delay = new PauseTransition(Duration.seconds(1.5));
-            delay.setOnFinished(e -> toastStage.close());
-            delay.play();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
     public void shutdown() {
         if (clipboardMonitor != null) {
             clipboardMonitor.stop();
-        }
-    }
-
-    private void showNotification(String message, NotificationType type) {
-        if (notificationFooter == null || notificationIcon == null || notificationText == null) {
-            System.out.println("Notification: " + message);
-            return;
-        }
-
-        Platform.runLater(() -> {
-            notificationText.setText(message);
-
-            notificationFooter.getStyleClass().removeAll("info", "success", "warning", "error");
-
-            switch (type) {
-                case SUCCESS:
-                    notificationIcon.setText("✓");
-                    notificationFooter.getStyleClass().add("success");
-                    break;
-                case WARNING:
-                    notificationIcon.setText("!");
-                    notificationFooter.getStyleClass().add("warning");
-                    break;
-                case ERROR:
-                    notificationIcon.setText("✗");
-                    notificationFooter.getStyleClass().add("error");
-                    break;
-                case INFO:
-                    notificationIcon.setText("i");
-                    notificationFooter.getStyleClass().add("info");
-                    break;
-                case DEFAULT:
-                default:
-                    notificationIcon.setText("•");
-                    break;
-            }
-
-            if (type != NotificationType.DEFAULT) {
-                PauseTransition pause = new PauseTransition(Duration.seconds(3));
-                pause.setOnFinished(e -> returnToDefaultState());
-                pause.play();
-            }
-        });
-    }
-
-    private void returnToDefaultState() {
-        if (notificationFooter != null) {
-            notificationFooter.getStyleClass().removeAll("info", "success", "warning", "error");
-            notificationIcon.setText("•");
-            notificationText.setText("Ready");
         }
     }
 }
