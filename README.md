@@ -1,10 +1,8 @@
-# Copy-Paste Anonymiwer
+# Copy-Paste Anonymizer
 
-A JavaFX desktop application that automatically monitors your clipboard and replaces sensitive information with anonymiwed alternatives in real-time.
+A JavaFX desktop application that automatically monitors your clipboard and replaces sensitive information with anonymized alternatives in real-time.
 
 ## Features
-
-![Copy-Paste Anonymizer Screenshot](src/main/resources/com/plociennik/copypasteanonymizer/images/cpa2.png)
 
 - **Real-time Clipboard Monitoring**: Automatically detects when you copy text to clipboard
 - **Flexible Replacement Modes**:
@@ -22,9 +20,19 @@ A JavaFX desktop application that automatically monitors your clipboard and repl
 - JavaFX 21
 - Windows
 
+## Download
+
+So far the application was only tested on Windows 10/11.
+- [Latest Release for Windows 10/11](https://github.com/your-username/copy-paste-anonymizer/releases/latest)
+
 ## Usage
 
-1. **Launch the Application**: Run the application using Gradle or the built executable
+1. **Launch the Application**: 
+    - If downloaded - just go to 'cpa/bin/' and open the 'copy paste anonymizer' (Windows Batch File)
+    - If cloned from GitHub - run the application using Gradle:
+```
+./gradlew run
+```
 2. **Add Replacement Pairs**: Click "➕ Add Pair" to create new text replacement rules
 3. **Configure Pairs**: Enter the original text and its replacement in the text fields
 4. **Select Mode**: Choose your preferred replacement mode:
@@ -33,6 +41,8 @@ A JavaFX desktop application that automatically monitors your clipboard and repl
     - **Bidirectional**: Smart detection and replacement in both directions
 5. **Save Configuration**: Click "💾 Save Pairs" to persist your settings
 6. **Monitor Clipboard**: The app automatically monitors clipboard - copy any text and watch it get anonymized!
+
+![Copy-Paste Anonymizer Screenshot](src/main/resources/com/plociennik/copypasteanonymizer/images/cpa2.png)
 
 ### Example Use Case
 
