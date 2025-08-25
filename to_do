@@ -1,0 +1,26 @@
+
+TO DO
+1. desktop icon
+2. shortcut name if possible
+3. linux compatibility
+4. auto clear clipboard after certain period of time
+5. minimize to tray
+6. some kind of logging would be nice
+7. case sensitivity toggle
+8.
+
+Ideas:
+1. option to add a separate custom keybind instead of the default one
+2. dark mode
+3. fuzzy matching (even if there is a typo we still replace the string)
+4. profiles and ability to switch between them
+5. regex matching (for example, I want to replace/anonymize any email)
+6. ability to add pairs into groups/folders/categories
+7. encryption for stored pairs
+8. password protection
+9. pre-defined anonymization rules
+10. maybe better colors
+11. a settings tab/section where you can adjust various things (like auto clear time)
+12. search/filter function
+13.
+
