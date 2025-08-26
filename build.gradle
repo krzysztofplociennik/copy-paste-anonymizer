@@ -7,7 +7,7 @@ plugins {
 }
 
 group 'com.plociennik'
-version '1.0-SNAPSHOT'
+version '0.2.0'
 
 repositories {
     mavenCentral()
@@ -55,7 +55,13 @@ jlink {
     imageZip = project.file("${buildDir}/distributions/copy paste anonymizer-${javafx.platform.classifier}.zip")
     options = ['--strip-debug', '--compress', '2', '--no-header-files', '--no-man-pages']
     launcher {
-        name = 'copy paste anonymizer'
+        name = 'copy_paste_anonymizer'
+    }
+    jpackage {
+        launcher {
+            name = "copy_paste_anonymizer_launcher"
+            icon = "src/main/resources/com/plociennik/copypasteanonymizer/icons/unknown.ico"
+        }
     }
 }
 

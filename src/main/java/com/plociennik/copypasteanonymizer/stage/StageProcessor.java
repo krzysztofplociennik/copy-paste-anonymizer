@@ -5,9 +5,11 @@ import com.plociennik.copypasteanonymizer.controller.MainController;
 import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
+import javafx.scene.image.Image;
 import javafx.stage.Stage;
 
 import java.io.IOException;
+import java.util.Objects;
 
 public class StageProcessor {
 
@@ -23,6 +25,10 @@ public class StageProcessor {
 
         scene.getStylesheets().add(
                 CopyPasteAnonymizerApplication.class.getResource("style.css").toExternalForm()
+        );
+
+        stage.getIcons().add(
+                new Image(Objects.requireNonNull(StageProcessor.class.getResourceAsStream("/com/plociennik/copypasteanonymizer/icons/unknown.png")))
         );
 
         setOnCloseRequest(stage, fxmlLoader);
