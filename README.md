@@ -4,8 +4,8 @@ A JavaFX desktop application that automatically monitors your clipboard and repl
 
 ## Features
 
-- **Real-time Clipboard Monitoring**: Automatically detects when you copy text to clipboard
-- **Flexible Replacement Modes**:
+- **Real-time Clipboard Monitoring**: Automatically detects when you copy a specific text to the clipboard
+- **Replacement Modes**:
     - Left → Right: Replace original text with anonymized version
     - Right → Left: Replace anonymized text with original version
     - Bidirectional: Automatically detect and replace in both directions
@@ -16,7 +16,7 @@ A JavaFX desktop application that automatically monitors your clipboard and repl
 
 ## Requirements
 
-- Java 21 or higher
+- Java 21
 - JavaFX 21
 - Windows
 
@@ -28,7 +28,7 @@ So far the application was only tested on Windows 10/11.
 ## Usage
 
 1. **Launch the Application**: 
-    - If downloaded - just go to 'cpa/bin/' and open the 'copy paste anonymizer' (Windows Batch File)
+    - If downloaded - just go to 'cpa/bin/' and open the 'copy paste anonymizer' file (Windows Batch File)
     - If cloned from GitHub - run the application using Gradle:
 ```
 ./gradlew run
@@ -56,16 +56,15 @@ So far the application was only tested on Windows 10/11.
 
 ## Configuration
 
-The application stores replacement pairs in a `pairs.txt` file in the working directory. The format is:
+The application stores replacement pairs in the `pairs.txt` file in the working directory. The format is:
 ```
 original_text = replacement_text
-another_original = another_replacement
+another_original_text = another_replacement_text
 ```
 
 ## Technical Details
 
 ### Dependencies
-- JavaFX Controls & FXML
-- ControlsFX
+- JavaFX
 - JNA 
 - Lombok 
