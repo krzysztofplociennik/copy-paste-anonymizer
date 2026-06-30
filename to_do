@@ -2,7 +2,7 @@
 TO DO
 1. desktop icon
 2. shortcut name if possible
-3. linux compatibility
+3.
 4. auto clear clipboard after certain period of time
 5. minimize to tray
 6. some kind of logging would be nice
@@ -22,5 +22,6 @@ Ideas:
 10. maybe better colors
 11. a settings tab/section where you can adjust various things (like auto clear time)
 12. search/filter function
-13.
+13. a sound feedback when copying (optional)
+14. a better visual feedback maybe (optional)
 
