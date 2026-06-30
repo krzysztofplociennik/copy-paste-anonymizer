@@ -22,8 +22,7 @@ A JavaFX desktop application that automatically monitors your clipboard and repl
 
 ## Download
 
-So far the application was only tested on Windows 10/11.
-- [Latest Release for Windows 10/11](https://github.com/krzysztofplociennik/copy-paste-anonymizer/releases/latest)
+- [Latest Release](https://github.com/krzysztofplociennik/copy-paste-anonymizer/releases/latest)
 
 ## Usage
 
