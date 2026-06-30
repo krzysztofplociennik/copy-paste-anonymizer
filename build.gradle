@@ -6,6 +6,13 @@ plugins {
     id 'org.beryx.jlink' version '3.0.1'
 }
 
+develocity {
+    buildScan {
+        termsOfUseUrl = "https://gradle.com/help/legal-terms-of-use"
+        termsOfUseAgree = "no"
+    }
+}
+
 group 'com.plociennik'
 version '0.2.0'
 
@@ -51,16 +58,18 @@ test {
     useJUnitPlatform()
 }
 
+import org.gradle.internal.os.OperatingSystem
+
 jlink {
-    imageZip = project.file("${buildDir}/distributions/copy paste anonymizer-${javafx.platform.classifier}.zip")
-    options = ['--strip-debug', '--compress', '2', '--no-header-files', '--no-man-pages']
-    launcher {
-        name = 'copy_paste_anonymizer'
-    }
     jpackage {
-        launcher {
-            name = "copy_paste_anonymizer_launcher"
-            icon = "src/main/resources/com/plociennik/copypasteanonymizer/icons/unknown.ico"
+        outputDir = "output"
+        skipInstaller = true
+        imageName = 'Copy-Paste Anonymizer'
+
+        if (OperatingSystem.current().isWindows()) {
+            imageOptions += ['--icon', 'src/main/resources/com/plociennik/copypasteanonymizer/icons/cpa-launch.ico']
+        } else if (OperatingSystem.current().isLinux()) {
+            imageOptions += ['--icon', 'src/main/resources/com/plociennik/copypasteanonymizer/icons/cpa-launch.png']
         }
     }
 }
