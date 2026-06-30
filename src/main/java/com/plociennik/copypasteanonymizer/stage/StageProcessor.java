@@ -28,7 +28,7 @@ public class StageProcessor {
         );
 
         stage.getIcons().add(
-                new Image(Objects.requireNonNull(StageProcessor.class.getResourceAsStream("/com/plociennik/copypasteanonymizer/icons/unknown.png")))
+                new Image(Objects.requireNonNull(StageProcessor.class.getResourceAsStream("/com/plociennik/copypasteanonymizer/icons/cpa-launch.png")))
         );
 
         setOnCloseRequest(stage, fxmlLoader);
