@@ -22,12 +22,20 @@ A JavaFX desktop application that automatically monitors your clipboard and repl
 
 ## Download
 
-- [Latest Release](https://github.com/krzysztofplociennik/copy-paste-anonymizer/releases/latest)
+- [latest release](https://github.com/krzysztofplociennik/copy-paste-anonymizer/releases/latest)
 
 ## Usage
 
-1. **Launch the Application**: 
-    - If downloaded - just go to 'cpa/bin/' and open the 'copy paste anonymizer' file (Windows Batch File)
+0. **Get the application** via download or jpackage:
+
+```
+./gradlew jpackage
+```
+
+and proceed to /src/build/output.
+
+1. **Launch the application**: 
+    - If downloaded or created via jpackage - go to the 'bin' directory and run the executable file ("copy paste anonymizer" or "Copy-Paste Anonymizer")
     - If cloned from GitHub - run the application using Gradle:
 ```
 ./gradlew run
