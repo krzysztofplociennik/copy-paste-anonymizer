@@ -100,16 +100,11 @@ public class MainController {
     }
 
     private String getModeDescription(ReplacementMode mode) {
-        switch (mode) {
-            case LEFT_TO_RIGHT:
-                return "Left → Right only";
-            case RIGHT_TO_LEFT:
-                return "Right → Left only";
-            case BIDIRECTIONAL:
-                return "Bidirectional";
-            default:
-                return "Unknown";
-        }
+        return switch (mode) {
+            case LEFT_TO_RIGHT -> "Left → Right only";
+            case RIGHT_TO_LEFT -> "Right → Left only";
+            case BIDIRECTIONAL -> "Bidirectional";
+        };
     }
 
     @FXML
