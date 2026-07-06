@@ -9,6 +9,8 @@
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.RadioButton?>
 <?import javafx.scene.layout.Region?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.image.Image?>
 
 <BorderPane xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml"
             fx:controller="com.plociennik.copypasteanonymizer.controller.MainController"
@@ -55,13 +57,26 @@
 
     <bottom>
         <VBox styleClass="bottom-panel">
+
             <!-- Add/Save buttons -->
             <HBox spacing="10" alignment="center" styleClass="button-area">
                 <padding>
                     <Insets top="15" right="15" bottom="10" left="15"/>
                 </padding>
-                <Button text="➕ Add Pair" onAction="#handleAddPair" styleClass="button,add-button"/>
-                <Button text="💾 Save Pairs" onAction="#handleSavePairs" styleClass="button,save-button"/>
+                <Button text=" Add Pair" onAction="#handleAddPair" styleClass="button,add-button">
+                    <graphic>
+                        <ImageView fitHeight="16" fitWidth="16" preserveRatio="true">
+                            <Image url="@icons/plus-3-16.png"/>
+                        </ImageView>
+                    </graphic>
+                </Button>
+                <Button text=" Save Pairs" onAction="#handleSavePairs" styleClass="button,save-button">
+                    <graphic>
+                        <ImageView fitHeight="16" fitWidth="16" preserveRatio="true">
+                            <Image url="@icons/save-16.png"/>
+                        </ImageView>
+                    </graphic>
+                </Button>
             </HBox>
 
             <!-- Footer notification area -->
