@@ -75,7 +75,7 @@ public class MainController {
         rightToLeftMode.setToggleGroup(replacementModeGroup);
         bidirectionalMode.setToggleGroup(replacementModeGroup);
 
-        bidirectionalMode.setSelected(true);
+        leftToRightMode.setSelected(true);
 
         replacementModeGroup.selectedToggleProperty().addListener((obs, oldToggle, newToggle) -> {
             if (newToggle != null) {
@@ -259,7 +259,6 @@ public class MainController {
         String replacedContent = this.replacementService.applyReplacements(content, getCurrentReplacementMode(), replacementPairs);
 
         if (!replacedContent.equals(content)) {
-            System.out.println("Content will be replaced");
 
             lastProcessedContent.set(replacedContent);
 
