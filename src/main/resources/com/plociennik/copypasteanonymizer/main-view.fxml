@@ -26,9 +26,9 @@
                 <VBox spacing="5" styleClass="mode-controls">
                     <Label text="Replacement Mode:" styleClass="mode-label"/>
                     <VBox spacing="8">
-                        <RadioButton fx:id="leftToRightMode" text="Left → Right" styleClass="mode-radio"/>
+                        <RadioButton fx:id="leftToRightMode" text="Left → Right" styleClass="mode-radio" selected="true"/>
                         <RadioButton fx:id="rightToLeftMode" text="Right → Left" styleClass="mode-radio"/>
-                        <RadioButton fx:id="bidirectionalMode" text="Bidirectional" styleClass="mode-radio" selected="true"/>
+                        <RadioButton fx:id="bidirectionalMode" text="Bidirectional" styleClass="mode-radio"/>
                     </VBox>
                 </VBox>
 

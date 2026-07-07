@@ -13,18 +13,15 @@ import java.util.Objects;
 
 public class StageProcessor {
 
-    private final static int SCENE_WIDTH = 700;
-    private final static int SCENE_HEIGHT = 600;
-
     public static void setup(Stage stage) throws IOException {
-        FXMLLoader fxmlLoader = new FXMLLoader(CopyPasteAnonymizerApplication.class.getResource("hello-view.fxml"));
-        Scene scene = new Scene(fxmlLoader.load(), SCENE_WIDTH, SCENE_HEIGHT);
+        FXMLLoader fxmlLoader = new FXMLLoader(CopyPasteAnonymizerApplication.class.getResource("main-view.fxml"));
+        Scene scene = new Scene(fxmlLoader.load(), 700, 600);
         stage.setTitle("Copy-Paste Anonymizer");
         stage.setScene(scene);
         stage.setIconified(false);
 
-        stage.setMinWidth(600);
-        stage.setMinHeight(400);
+        stage.setMinWidth(500);
+        stage.setMinHeight(350);
 
         scene.getStylesheets().add(
                 CopyPasteAnonymizerApplication.class.getResource("style.css").toExternalForm()
