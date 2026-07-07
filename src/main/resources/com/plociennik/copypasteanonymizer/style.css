@@ -1,7 +1,8 @@
 .root {
     -fx-background-color: #f8f9fa;
     -fx-font-family: "Segoe UI", "Segoe UI Symbol", "San Francisco", "Helvetica Neue", Arial, sans-serif;
-    -fx-font-size: 14px;
+    -fx-font-size: 16px;
+    -fx-pref-width: 1220px;
 }
 
 .button {
@@ -31,6 +32,8 @@
     -fx-background-radius: 4px;
     -fx-padding: 8px 12px;
     -fx-font-size: 14px;
+    -fx-pref-width: 300px;
+    -fx-pref-height: 40px;
 }
 
 .text-field:focused {
