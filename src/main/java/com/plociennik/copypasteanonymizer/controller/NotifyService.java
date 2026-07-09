@@ -1,5 +1,8 @@
 package com.plociennik.copypasteanonymizer.controller;
 
+import com.plociennik.copypasteanonymizer.common.CopyPasteAnonymizerException;
+import com.plociennik.copypasteanonymizer.util.StyleCssUtil;
+
 import javafx.animation.PauseTransition;
 import javafx.application.Platform;
 import javafx.geometry.Rectangle2D;
@@ -14,34 +17,48 @@ import javafx.util.Duration;
 
 public class NotifyService {
 
+    private Stage toastStage;
+
     public void showAnonymizationSuccessMessage() {
+        Stage toastStage = this.toastStage == null ? initAnonymizationSuccessMessage() : this.toastStage;
+
         try {
-            Stage toastStage = new Stage();
-            toastStage.setResizable(false);
-            toastStage.initStyle(StageStyle.TRANSPARENT);
-            toastStage.setAlwaysOnTop(true);
-
-            Label label = new Label("Text anonymized");
-            label.setStyle("-fx-background-color: rgba(0,0,0,0.8); -fx-text-fill: white; -fx-padding: 10px; -fx-background-radius: 5;");
-            StackPane root = new StackPane(label);
-            root.setStyle("-fx-background-color: transparent;");
-
-            Scene scene = new Scene(root);
-            scene.setFill(null);
-            toastStage.setScene(scene);
-
-            Rectangle2D bounds = Screen.getPrimary().getVisualBounds();
-            toastStage.setX(bounds.getMaxX() - 250);
-            toastStage.setY(bounds.getMaxY() - 80);
-
             toastStage.show();
 
             PauseTransition delay = new PauseTransition(Duration.seconds(1.5));
             delay.setOnFinished(e -> toastStage.close());
             delay.play();
         } catch (Exception e) {
-            e.printStackTrace();
+            throw new CopyPasteAnonymizerException("1412_09072026", "Error while trying to show anonymization success message.");
+            // todo: need to add a specific error via a new error constructor
         }
+    }
+
+    private Stage initAnonymizationSuccessMessage() {
+        Stage toastStage = new Stage();
+        toastStage.setResizable(false);
+        toastStage.initStyle(StageStyle.TRANSPARENT);
+        toastStage.setAlwaysOnTop(true);
+
+        Label label = new Label("Text anonymized");
+        label.getStyleClass().add("anonymized-label");
+
+        StackPane root = new StackPane(label);
+        root.getStyleClass().add("anonymized-overlay");
+
+        Scene scene = new Scene(root);
+        scene.getStylesheets().add(StyleCssUtil.getResource());
+        scene.setFill(null);
+
+        toastStage.setScene(scene);
+
+        Rectangle2D bounds = Screen.getPrimary().getVisualBounds();
+        toastStage.setY(bounds.getMaxY() - 80);
+        toastStage.setX(bounds.getMaxX() / 2 - 120);
+
+        this.toastStage = toastStage;
+
+        return this.toastStage;
     }
 
     public void showNotification(String message, NotificationType type, HBox notificationFooter, Label notificationIcon, Label notificationText) {
@@ -54,6 +71,8 @@ public class NotifyService {
             notificationText.setText(message);
 
             notificationFooter.getStyleClass().removeAll("info", "success", "warning", "error");
+
+            // todo: switch refactor
 
             switch (type) {
                 case SUCCESS:

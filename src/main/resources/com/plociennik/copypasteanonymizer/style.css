@@ -161,3 +161,31 @@
     -fx-background-radius: 4px;
     -fx-padding: 8px;
 }
+
+.anonymized-overlay {
+    -fx-min-width: 200;
+    -fx-pref-width: 250;
+    -fx-max-width: 300;
+    -fx-min-height: 140;
+    -fx-pref-height: 150;
+    -fx-background-color: solid;
+}
+
+.anonymized-label {
+    -fx-background-color: rgba(0, 0, 0, 0.8);
+    -fx-text-fill: white;
+    -fx-padding: 10;
+    -fx-background-radius: 5;
+
+    -fx-border-color: white;
+    -fx-border-width: 2;
+    -fx-border-radius: 5;
+
+    -fx-min-width: 100;
+    -fx-pref-width: 150;
+    -fx-max-width: 200;
+    -fx-min-height: 40;
+    -fx-pref-height: 50;
+    -fx-wrap-text: true;
+    -fx-alignment: center;
+}
