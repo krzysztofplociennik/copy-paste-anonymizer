@@ -2,6 +2,7 @@ package com.plociennik.copypasteanonymizer.stage;
 
 import com.plociennik.copypasteanonymizer.CopyPasteAnonymizerApplication;
 import com.plociennik.copypasteanonymizer.controller.MainController;
+import com.plociennik.copypasteanonymizer.util.StyleCssUtil;
 import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
@@ -23,9 +24,7 @@ public class StageProcessor {
         stage.setMinWidth(500);
         stage.setMinHeight(350);
 
-        scene.getStylesheets().add(
-                CopyPasteAnonymizerApplication.class.getResource("style.css").toExternalForm()
-        );
+        scene.getStylesheets().add(StyleCssUtil.getResource());
 
         stage.getIcons().add(
                 new Image(Objects.requireNonNull(StageProcessor.class.getResourceAsStream("/com/plociennik/copypasteanonymizer/icons/cpa-launch.png")))
