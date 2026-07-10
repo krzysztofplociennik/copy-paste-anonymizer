@@ -1,12 +1,12 @@
 
 TO DO
-1. normal logging instead of system out
-2. shortcut name if possible
-3.
-4. auto clear clipboard after certain period of time
-5. minimize to tray
-6. some kind of logging would be nice
-7. case sensitivity toggle
+1. clear todos
+2. get windows version running
+3. some refactoring (project structure is weird)
+4. release new version
+5.
+6.
+7.
 8.
 
 Ideas:
@@ -23,5 +23,10 @@ Ideas:
 11. a settings tab/section where you can adjust various things (like auto clear time)
 12. search/filter function
 13. a sound feedback when copying (optional)
-14. a better visual feedback maybe (optional)
+14.
+15. auto clear clipboard after certain period of time
+16. minimize to tray
+17. some kind of logging would be nice
+18. case sensitivity toggle
+19. normal logging instead of system out
 
