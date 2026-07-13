@@ -5,8 +5,7 @@ public class CopyPasteAnonymizerException extends RuntimeException {
         super("(%s) %s".formatted(errorID, message));
     }
 
-    private DetailedError getDetailedErrorResponse(Exception e) {
-        // todo
-        return null;
+    public CopyPasteAnonymizerException(String errorID, String message, Exception e) {
+        super("(%s) %s\nCause: [%s]".formatted(errorID, message, e.toString()));
     }
 }
