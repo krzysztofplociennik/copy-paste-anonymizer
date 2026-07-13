@@ -33,6 +33,56 @@ public class NotifyService {
         }
     }
 
+    // todo: some kind of differentiation should be going on - right now I have 2 ways of informing a user what
+    //  is happening, the naming scheme maybe should change to reflect that
+    public void showNotification(String message, NotificationType type, HBox notificationFooter,
+                                 Label notificationIcon, Label notificationText) {
+        if (notificationFooter == null || notificationIcon == null || notificationText == null) {
+            System.out.println("Notification: " + message);
+            return;
+        }
+
+        Platform.runLater(() -> {
+            notificationText.setText(message);
+
+            notificationFooter.getStyleClass().removeAll("info", "success", "warning", "error");
+
+            switch (type) {
+                case SUCCESS -> {
+                    notificationIcon.setText("✓");
+                    notificationFooter.getStyleClass().add("success");
+                }
+                case WARNING -> {
+                    notificationIcon.setText("!");
+                    notificationFooter.getStyleClass().add("warning");
+                }
+                case ERROR -> {
+                    notificationIcon.setText("✗");
+                    notificationFooter.getStyleClass().add("error");
+                }
+                case INFO -> {
+                    notificationIcon.setText("i");
+                    notificationFooter.getStyleClass().add("info");
+                }
+                default -> notificationText.setText("•");
+            }
+
+            if (type != NotificationType.DEFAULT) {
+                PauseTransition pause = new PauseTransition(Duration.seconds(3));
+                pause.setOnFinished(e -> returnToDefaultState(notificationFooter, notificationIcon, notificationText));
+                pause.play();
+            }
+        });
+    }
+
+    private void returnToDefaultState(HBox notificationFooter, Label notificationIcon, Label notificationText) {
+        if (notificationFooter != null) {
+            notificationFooter.getStyleClass().removeAll("info", "success", "warning", "error");
+            notificationIcon.setText("•");
+            notificationText.setText("Ready");
+        }
+    }
+
     private Stage initAnonymizationSuccessMessage() {
         Stage toastStage = new Stage();
         toastStage.setResizable(false);
@@ -58,61 +108,5 @@ public class NotifyService {
         this.toastStage = toastStage;
 
         return this.toastStage;
-    }
-
-    // todo: some kind of differentiation should be going on - right now I have 2 ways of informing a user what
-    //  is happening, the naming scheme maybe should change to reflect that
-
-    public void showNotification(String message, NotificationType type, HBox notificationFooter,
-                                 Label notificationIcon, Label notificationText) {
-        if (notificationFooter == null || notificationIcon == null || notificationText == null) {
-            System.out.println("Notification: " + message);
-            return;
-        }
-
-        Platform.runLater(() -> {
-            notificationText.setText(message);
-
-            notificationFooter.getStyleClass().removeAll("info", "success", "warning", "error");
-
-            // todo: switch refactor
-
-            switch (type) {
-                case SUCCESS:
-                    notificationIcon.setText("✓");
-                    notificationFooter.getStyleClass().add("success");
-                    break;
-                case WARNING:
-                    notificationIcon.setText("!");
-                    notificationFooter.getStyleClass().add("warning");
-                    break;
-                case ERROR:
-                    notificationIcon.setText("✗");
-                    notificationFooter.getStyleClass().add("error");
-                    break;
-                case INFO:
-                    notificationIcon.setText("i");
-                    notificationFooter.getStyleClass().add("info");
-                    break;
-                case DEFAULT:
-                default:
-                    notificationIcon.setText("•");
-                    break;
-            }
-
-            if (type != NotificationType.DEFAULT) {
-                PauseTransition pause = new PauseTransition(Duration.seconds(3));
-                pause.setOnFinished(e -> returnToDefaultState(notificationFooter, notificationIcon, notificationText));
-                pause.play();
-            }
-        });
-    }
-
-    private void returnToDefaultState(HBox notificationFooter, Label notificationIcon, Label notificationText) {
-        if (notificationFooter != null) {
-            notificationFooter.getStyleClass().removeAll("info", "success", "warning", "error");
-            notificationIcon.setText("•");
-            notificationText.setText("Ready");
-        }
     }
 }
