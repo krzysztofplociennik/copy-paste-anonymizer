@@ -1,6 +1,7 @@
 package com.plociennik.copypasteanonymizer.controller;
 
 import com.plociennik.copypasteanonymizer.clipboard.SimpleClipboardMonitor;
+import com.plociennik.copypasteanonymizer.common.CopyPasteAnonymizerException;
 import javafx.application.Platform;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -208,8 +209,8 @@ public class MainController {
             }
             notifyService.showNotification("Successfully saved " + pairs.size() + " pairs.", NotificationType.SUCCESS, notificationFooter, notificationIcon, notificationText);
         } catch (IOException e) {
-            e.printStackTrace();
             notifyService.showNotification("Error saving pairs: " + e.getMessage(), NotificationType.ERROR, notificationFooter, notificationIcon, notificationText);
+            throw new CopyPasteAnonymizerException("1134_13072026", "Something happened when trying to show a notification:", e);
         }
     }
 
@@ -222,8 +223,7 @@ public class MainController {
         try {
             lines = Files.readAllLines(file.toPath());
         } catch (IOException e) {
-            e.printStackTrace();
-            return;
+            throw new CopyPasteAnonymizerException("1135_13072026", "Something happened when trying to load existing pairs:", e);
         }
 
         pairsContainer.getChildren().clear();
@@ -280,8 +280,8 @@ public class MainController {
                     Thread.sleep(200);
 
                 } catch (Exception e) {
-                    e.printStackTrace();
                     Platform.runLater(() -> notifyService.showNotification("Error updating clipboard", NotificationType.ERROR, notificationFooter, notificationIcon, notificationText));
+                    throw new CopyPasteAnonymizerException("1134_13072026", "Something happened when trying to update the clipboard:", e);
                 } finally {
                     clipboardMonitor.setProcessing(false);
                 }

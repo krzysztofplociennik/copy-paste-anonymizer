@@ -29,8 +29,7 @@ public class NotifyService {
             delay.setOnFinished(e -> toastStage.close());
             delay.play();
         } catch (Exception e) {
-            throw new CopyPasteAnonymizerException("1412_09072026", "Error while trying to show anonymization success message.");
-            // todo: need to add a specific error via a new error constructor
+            throw new CopyPasteAnonymizerException("1412_09072026", "Error while trying to show anonymization success message.", e);
         }
     }
 
