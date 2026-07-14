@@ -12,6 +12,8 @@ import java.util.function.Consumer;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+// todo: analyze
+
 public final class SimpleClipboardMonitor {
 
     private static final Logger LOG = Logger.getLogger(SimpleClipboardMonitor.class.getName());
@@ -65,6 +67,7 @@ public final class SimpleClipboardMonitor {
                 thread.join(JOIN_TIMEOUT_MS);
             } catch (InterruptedException e) {
                 Thread.currentThread().interrupt();
+                LOG.severe("(%s) %s\n%s".formatted("1413_140726", "Something happened when trying to join the current thread:", e.toString()));
             }
         }
         monitorThread = null;
@@ -116,7 +119,7 @@ public final class SimpleClipboardMonitor {
                 LOG.log(Level.WARNING, "Unexpected clipboard error", e);
 
                 if (consecutiveErrors >= MAX_ERRORS) {
-                    LOG.severe("Too many unexpected errors. Stopping monitor.");
+                    LOG.severe("(%s) %s\n%s".formatted("1456_140726", "Too many unexpected errors. Stopping monitor.", e.toString()));
                     break;
                 }
                 if (!interruptibleSleep(UNEXPECTED_ERROR_RETRY_MS)) {
@@ -175,6 +178,7 @@ public final class SimpleClipboardMonitor {
             return true;
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
+            LOG.warning("(%s) %s\n%s".formatted("1459_140726", "The sleep was interrupted.", e.toString()));
             return false;
         }
     }
