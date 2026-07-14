@@ -33,9 +33,7 @@ public class NotifyService {
         }
     }
 
-    // todo: some kind of differentiation should be going on - right now I have 2 ways of informing a user what
-    //  is happening, the naming scheme maybe should change to reflect that
-    public void showNotification(String message, NotificationType type, HBox notificationFooter,
+    public void showFooterStatus(String message, NotificationType type, HBox notificationFooter,
                                  Label notificationIcon, Label notificationText) {
         if (notificationFooter == null || notificationIcon == null || notificationText == null) {
             System.out.println("Notification: " + message);
