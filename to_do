@@ -4,7 +4,7 @@ TO DO
 2. get windows version running
 3. some refactoring (project structure is weird)
 4. release new version
-5. bidirectional is not working (left)
+5.
 6. when pausing the copy is not working on one side
 7.
 8.
@@ -30,3 +30,6 @@ Ideas:
 18. case sensitivity toggle
 19. normal logging instead of system out
 
+Problems ignored:
+- bidirectional is not going to work sometimes (last content is the same as the copied value in the clipboard thus
+not triggering the onClipboardChange method); it's pretty much an edge case
