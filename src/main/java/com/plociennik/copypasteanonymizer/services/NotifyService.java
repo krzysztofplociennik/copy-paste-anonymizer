@@ -1,6 +1,7 @@
-package com.plociennik.copypasteanonymizer.controller;
+package com.plociennik.copypasteanonymizer.services;
 
 import com.plociennik.copypasteanonymizer.common.CopyPasteAnonymizerException;
+import com.plociennik.copypasteanonymizer.enums.NotificationType;
 import com.plociennik.copypasteanonymizer.util.StyleCssUtil;
 
 import javafx.animation.PauseTransition;

@@ -2,6 +2,11 @@ package com.plociennik.copypasteanonymizer.controller;
 
 import com.plociennik.copypasteanonymizer.clipboard.SimpleClipboardMonitor;
 import com.plociennik.copypasteanonymizer.common.CopyPasteAnonymizerException;
+import com.plociennik.copypasteanonymizer.enums.NotificationType;
+import com.plociennik.copypasteanonymizer.enums.ReplacementMode;
+import com.plociennik.copypasteanonymizer.services.NotifyService;
+import com.plociennik.copypasteanonymizer.services.PairValidationService;
+import com.plociennik.copypasteanonymizer.services.ReplacementService;
 import javafx.application.Platform;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -259,9 +264,7 @@ public class MainController {
         String replacedContent = this.replacementService.applyReplacements(content, getCurrentReplacementMode(), replacementPairs);
 
         if (!replacedContent.equals(content)) {
-
             lastProcessedContent.set(replacedContent);
-
             clipboardMonitor.setProcessing(true);
 
             Thread updater = new Thread(() -> {
@@ -276,11 +279,9 @@ public class MainController {
                         notifyService.showFooterStatus("Clipboard content anonymized", NotificationType.SUCCESS, notificationFooter, notificationIcon, notificationText);
                         notifyService.showAnonymizationSuccessMessage();
                     });
-
                     Thread.sleep(200);
-
                 } catch (Exception e) {
-                    Platform.runLater(() -> notifyService.showFooterStatus("Error updating clipboard", NotificationType.ERROR, notificationFooter, notificationIcon, notificationText));
+                    Platform.runLater(() -> notifyService.showFooterStatus("Error while updating clipboard", NotificationType.ERROR, notificationFooter, notificationIcon, notificationText));
                     throw new CopyPasteAnonymizerException("1134_13072026", "Something happened when trying to update the clipboard:", e);
                 } finally {
                     clipboardMonitor.setProcessing(false);

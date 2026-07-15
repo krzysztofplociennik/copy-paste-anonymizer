@@ -17,4 +17,8 @@ exports com.plociennik.copypasteanonymizer.clipboard;
 opens com.plociennik.copypasteanonymizer.clipboard to javafx.fxml;
 exports com.plociennik.copypasteanonymizer.stage;
 opens com.plociennik.copypasteanonymizer.stage to javafx.fxml;
+exports com.plociennik.copypasteanonymizer.services;
+opens com.plociennik.copypasteanonymizer.services to javafx.fxml;
+exports com.plociennik.copypasteanonymizer.enums;
+opens com.plociennik.copypasteanonymizer.enums to javafx.fxml;
 }

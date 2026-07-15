@@ -1,4 +1,4 @@
-package com.plociennik.copypasteanonymizer.controller;
+package com.plociennik.copypasteanonymizer.enums;
 
 public enum ReplacementMode {
     LEFT_TO_RIGHT,

@@ -1,5 +1,6 @@
-package com.plociennik.copypasteanonymizer.controller;
+package com.plociennik.copypasteanonymizer.services;
 
+import com.plociennik.copypasteanonymizer.enums.ReplacementMode;
 import javafx.util.Pair;
 import org.apache.commons.lang3.StringUtils;
 

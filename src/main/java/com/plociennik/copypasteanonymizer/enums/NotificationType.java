@@ -1,4 +1,4 @@
-package com.plociennik.copypasteanonymizer.controller;
+package com.plociennik.copypasteanonymizer.enums;
 
 public enum NotificationType {
     DEFAULT,

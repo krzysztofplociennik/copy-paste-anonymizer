@@ -1,4 +1,4 @@
-package com.plociennik.copypasteanonymizer.controller;
+package com.plociennik.copypasteanonymizer.services;
 
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
