@@ -133,8 +133,7 @@ public final class SimpleClipboardMonitor {
 
     private void pollClipboardOnce(Clipboard clipboard) throws UnsupportedFlavorException, IOException {
         Transferable contents = clipboard.getContents(null);
-        if (contents == null ||
-                !contents.isDataFlavorSupported(DataFlavor.stringFlavor)) {
+        if (contents == null || !contents.isDataFlavorSupported(DataFlavor.stringFlavor)) {
             return;
         }
 
