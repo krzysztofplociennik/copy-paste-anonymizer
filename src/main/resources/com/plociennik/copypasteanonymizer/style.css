@@ -168,7 +168,7 @@
     -fx-max-width: 300;
     -fx-min-height: 140;
     -fx-pref-height: 150;
-    -fx-background-color: solid;
+    -fx-background-color: transparent;
 }
 
 .anonymized-label {
