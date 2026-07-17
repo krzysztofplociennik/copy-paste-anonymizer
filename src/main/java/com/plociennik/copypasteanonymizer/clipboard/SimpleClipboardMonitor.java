@@ -12,8 +12,6 @@ import java.util.function.Consumer;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-// todo: analyze
-
 public final class SimpleClipboardMonitor {
 
     private static final Logger LOG = Logger.getLogger(SimpleClipboardMonitor.class.getName());
