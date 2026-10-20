@@ -6,6 +6,7 @@ import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.Transferable;
 import java.awt.datatransfer.UnsupportedFlavorException;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.util.Objects;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.Consumer;
@@ -39,8 +40,19 @@ public final class SimpleClipboardMonitor {
 
     private Thread monitorThread;
 
+    private final boolean isWayland;
+
     public SimpleClipboardMonitor(Consumer<String> onClipboardChange) {
         this.onClipboardChange = Objects.requireNonNull(onClipboardChange);
+        this.isWayland = isWayland();
+    }
+
+    private boolean isWayland() {
+        String sessionType = System.getenv("XDG_SESSION_TYPE");
+        boolean isSessionTypeNotNull = sessionType != null;
+        boolean sessionTypeIsWayland = isSessionTypeNotNull && sessionType.equalsIgnoreCase("wayland");
+        boolean isDisplayWaylandType = System.getenv("WAYLAND_DISPLAY") != null;
+        return sessionTypeIsWayland || isDisplayWaylandType;
     }
 
     public void start() {
@@ -76,7 +88,6 @@ public final class SimpleClipboardMonitor {
     }
 
     private void runMonitorLoop() {
-        Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
         int consecutiveErrors = 0;
 
         LOG.info("Clipboard monitor started");
@@ -89,7 +100,7 @@ public final class SimpleClipboardMonitor {
                     }
                     continue;
                 }
-                pollClipboardOnce(clipboard);
+                pollClipboardOnce();
                 consecutiveErrors = 0;
 
                 long elapsedMs = (System.nanoTime() - lastChangeTimeNs) / 1_000_000L;
@@ -129,26 +140,53 @@ public final class SimpleClipboardMonitor {
         LOG.info("Clipboard monitor stopped");
     }
 
-    private void pollClipboardOnce(Clipboard clipboard) throws UnsupportedFlavorException, IOException {
-        Transferable contents = clipboard.getContents(null);
-        if (contents == null || !contents.isDataFlavorSupported(DataFlavor.stringFlavor)) {
+    private void pollClipboardOnce() throws UnsupportedFlavorException, IOException {
+        String content = isWayland
+                ? readClipboardWlPaste()
+                : readClipboardAWT();
+
+        if (content == null || content.equals(lastContent)) {
             return;
         }
-
-        String content = (String) contents.getTransferData(DataFlavor.stringFlavor);
-        if (content.equals(lastContent)) {
-            return;
-        }
-
         long now = System.nanoTime();
         if (now - lastChangeTimeNs <= DEBOUNCE_NS) {
             return;
         }
-
         lastContent = content;
         lastChangeTimeNs = now;
         LOG.fine(() -> "Clipboard changed: " + truncate(content));
         onClipboardChange.accept(content);
+    }
+
+    private String readClipboardAWT() {
+        try {
+            Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
+            Transferable contents = clipboard.getContents(null);
+            if (contents == null || !contents.isDataFlavorSupported(DataFlavor.stringFlavor)) {
+                return null;
+            }
+            return (String) contents.getTransferData(DataFlavor.stringFlavor);
+        } catch (UnsupportedFlavorException | IOException e) {
+            String errorMessage = "(%s) %s\n%s".formatted("0917_20102026", "AWT clipboard read failed.", e.toString());
+            LOG.severe(errorMessage);
+            throw new RuntimeException(errorMessage, e);
+        }
+    }
+
+    private String readClipboardWlPaste() {
+        try {
+            Process p = new ProcessBuilder("wl-paste", "-n")
+                    .redirectErrorStream(false)
+                    .start();
+            byte[] bytes = p.getInputStream().readAllBytes();
+            p.waitFor();
+            return new String(bytes, StandardCharsets.UTF_8);
+        } catch (Exception e) {
+            LOG.finer("wl-paste read failed: " + e);
+            String errorMessage = "(%s) %s\n%s".formatted("1456_140726", "Too many unexpected errors. Stopping monitor.", e.toString());
+            LOG.severe(errorMessage);
+            throw new RuntimeException(errorMessage);
+        }
     }
 
     private long computePollInterval(long timeSinceLastChangeMs) {

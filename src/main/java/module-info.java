@@ -8,6 +8,7 @@ requires static lombok;
 requires jdk.compiler;
 requires org.apache.commons.lang3;
 requires java.logging;
+requires com.sun.jna.platform;
 
 opens com.plociennik.copypasteanonymizer to javafx.fxml;
 exports com.plociennik.copypasteanonymizer;
