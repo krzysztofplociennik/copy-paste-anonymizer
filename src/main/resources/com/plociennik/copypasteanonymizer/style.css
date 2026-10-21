@@ -191,7 +191,7 @@
 .anonymized-fail-overlay {
     -fx-background-color: transparent;
     -fx-pref-width: 1250;
-    -fx-pref-height: 1150;
+    -fx-pref-height: 150;
 }
 
 .anonymized-fail-label {

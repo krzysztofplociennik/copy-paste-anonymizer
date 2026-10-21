@@ -54,7 +54,6 @@ public class NotifyService {
         toastStage.setAlwaysOnTop(true);
 
         Label label = new Label(message);
-
         String labelClassName = type.equals(NotificationType.SUCCESS) ? "anonymized-label" : "anonymized-fail-label";
         label.getStyleClass().add(labelClassName);
 
@@ -67,18 +66,17 @@ public class NotifyService {
         scene.setFill(null);
 
         toastStage.setScene(scene);
-
         toastStage.centerOnScreen();
-
         this.toastStage = toastStage;
-
         return this.toastStage;
     }
 
     private void centerStage(Stage stage) {
-        Rectangle2D bounds = Screen.getPrimary().getVisualBounds();
         stage.centerOnScreen();
-        ReadOnlyDoubleProperty height = stage.heightProperty();
-        stage.setY(bounds.getHeight() / 2 + (height.doubleValue()) / 2);
+        Rectangle2D bounds = Screen.getPrimary().getVisualBounds();
+        ReadOnlyDoubleProperty stageHeight = stage.heightProperty();
+        double h = bounds.getMaxY() * 0.9;
+        double h2 = stageHeight.doubleValue() / 2;
+        stage.setY(h + h2);
     }
 }
