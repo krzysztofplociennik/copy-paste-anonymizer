@@ -64,7 +64,7 @@ jlink {
     jpackage {
         outputDir = "output"
         skipInstaller = true
-        imageName = 'Copy-Paste Anonymizer'
+        imageName = 'Copy-Paste-Anonymizer'
 
         if (OperatingSystem.current().isWindows()) {
             imageOptions += ['--icon', 'src/main/resources/com/plociennik/copypasteanonymizer/icons/cpa-launch.ico']
