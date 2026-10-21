@@ -1,9 +1,7 @@
 # Copy-Paste Anonymizer
-
 A JavaFX desktop application that automatically monitors your clipboard and replaces sensitive information with anonymized alternatives in real-time.
 
 ## Features
-
 - **Real-time Clipboard Monitoring**: Automatically detects when you copy a specific text to the clipboard
 - **Replacement Modes**:
     - Left → Right: Replace original text with anonymized version
@@ -14,18 +12,14 @@ A JavaFX desktop application that automatically monitors your clipboard and repl
 - **Visual Feedback**: Toast notifications and status indicators
 - **Pause/Resume**: Toggle clipboard monitoring on demand
 
-## Requirements
-
-- Java 21
-- JavaFX 21
-- Windows
+## Compatibility
+- Windows: 7/10/11
+- Linux: Mint/CachyOS
 
 ## Download
-
 - [latest release](https://github.com/krzysztofplociennik/copy-paste-anonymizer/releases/latest)
 
 ## Usage
-
 0. **Get the application** via download or jpackage:
 
 ```
@@ -52,7 +46,6 @@ and proceed to /src/build/output.
 ![Copy-Paste Anonymizer Screenshot](src/main/resources/com/plociennik/copypasteanonymizer/images/cpa2.png)
 
 ### Example Use Case
-
 **Replacement Pair:**
 - Original: `john.doe@company.com`
 - Replacement: `user1@example.com`
@@ -62,7 +55,6 @@ and proceed to /src/build/output.
 - Copy `user1@example.com` → Clipboard becomes `john.doe@company.com`
 
 ## Configuration
-
 The application stores replacement pairs in the `pairs.txt` file in the working directory. The format is:
 ```
 original_text = replacement_text
