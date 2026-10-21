@@ -163,29 +163,45 @@
 }
 
 .anonymized-overlay {
+    -fx-background-color: transparent;
     -fx-min-width: 200;
     -fx-pref-width: 250;
     -fx-max-width: 300;
     -fx-min-height: 140;
     -fx-pref-height: 150;
-    -fx-background-color: transparent;
 }
 
 .anonymized-label {
-    -fx-background-color: rgba(0, 0, 0, 0.8);
-    -fx-text-fill: white;
+    -fx-background-color: #1C1C1C;
+    -fx-text-fill: #8FFABD;
     -fx-padding: 10;
     -fx-background-radius: 5;
-
-    -fx-border-color: white;
+    -fx-border-color: #8FFABD;
     -fx-border-width: 2;
     -fx-border-radius: 5;
-
     -fx-min-width: 100;
     -fx-pref-width: 150;
     -fx-max-width: 200;
     -fx-min-height: 40;
     -fx-pref-height: 50;
+    -fx-wrap-text: true;
+    -fx-alignment: center;
+}
+
+.anonymized-fail-overlay {
+    -fx-background-color: transparent;
+    -fx-pref-width: 1250;
+    -fx-pref-height: 1150;
+}
+
+.anonymized-fail-label {
+    -fx-background-color: #1C1C1C;
+    -fx-text-fill: #FF6E6E;
+    -fx-padding: 10;
+    -fx-background-radius: 5;
+    -fx-border-width: 2;
+    -fx-border-color: #FF6E6E;
+    -fx-border-radius: 5;
     -fx-wrap-text: true;
     -fx-alignment: center;
 }

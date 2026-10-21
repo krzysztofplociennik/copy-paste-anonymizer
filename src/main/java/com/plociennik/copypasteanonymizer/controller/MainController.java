@@ -4,6 +4,7 @@ import com.plociennik.copypasteanonymizer.clipboard.SimpleClipboardMonitor;
 import com.plociennik.copypasteanonymizer.common.CopyPasteAnonymizerException;
 import com.plociennik.copypasteanonymizer.enums.NotificationType;
 import com.plociennik.copypasteanonymizer.enums.ReplacementMode;
+import com.plociennik.copypasteanonymizer.services.FooterService;
 import com.plociennik.copypasteanonymizer.services.NotifyService;
 import com.plociennik.copypasteanonymizer.services.PairValidationService;
 import com.plociennik.copypasteanonymizer.services.ReplacementService;
@@ -11,15 +12,16 @@ import javafx.application.Platform;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
-import javafx.scene.control.*;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.RadioButton;
 import javafx.scene.control.TextField;
+import javafx.scene.control.ToggleGroup;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.util.Pair;
 
-import java.awt.*;
+import java.awt.Toolkit;
 import java.awt.datatransfer.Clipboard;
 import java.awt.datatransfer.StringSelection;
 import java.io.File;
@@ -66,11 +68,13 @@ public class MainController {
     private PairValidationService pairValidationService;
     private ReplacementService replacementService;
     private NotifyService notifyService;
+    private FooterService footerService;
 
     public MainController() {
         this.pairValidationService = new PairValidationService();
         this.replacementService = new ReplacementService();
         this.notifyService = new NotifyService();
+        this.footerService = new FooterService();
     }
 
 
@@ -86,12 +90,12 @@ public class MainController {
         replacementModeGroup.selectedToggleProperty().addListener((obs, oldToggle, newToggle) -> {
             if (newToggle != null) {
                 ReplacementMode mode = getCurrentReplacementMode();
-                this.notifyService.showFooterStatus("Replacement mode: " + getModeDescription(mode), NotificationType.INFO, notificationFooter, notificationIcon, notificationText);
+                this.footerService.showFooterStatus("Replacement mode: " + getModeDescription(mode), NotificationType.INFO, notificationFooter, notificationIcon, notificationText);
             }
         });
 
         handleLoadPairs();
-        this.notifyService.showFooterStatus("App started. Loaded saved pairs.", NotificationType.SUCCESS, notificationFooter, notificationIcon, notificationText);
+        this.footerService.showFooterStatus("App started. Loaded saved pairs.", NotificationType.SUCCESS, notificationFooter, notificationIcon, notificationText);
         startClipboardMonitor();
     }
 
@@ -121,12 +125,12 @@ public class MainController {
             monitoringToggle.setText("Resume");
             monitoringToggle.getStyleClass().removeAll("active");
             monitoringToggle.getStyleClass().add("paused");
-            this.notifyService.showFooterStatus("Clipboard monitoring paused", NotificationType.WARNING, notificationFooter, notificationIcon, notificationText);
+            this.footerService.showFooterStatus("Clipboard monitoring paused", NotificationType.WARNING, notificationFooter, notificationIcon, notificationText);
         } else {
             monitoringToggle.setText("Pause");
             monitoringToggle.getStyleClass().removeAll("paused");
             monitoringToggle.getStyleClass().add("active");
-            notifyService.showFooterStatus("Clipboard monitoring resumed", NotificationType.SUCCESS, notificationFooter, notificationIcon, notificationText);
+            footerService.showFooterStatus("Clipboard monitoring resumed", NotificationType.SUCCESS, notificationFooter, notificationIcon, notificationText);
         }
     }
 
@@ -134,12 +138,12 @@ public class MainController {
     private void handleAddPair() {
         boolean arePairsNotValid = this.pairValidationService.arePairsNotValid(pairsContainer);
         if (arePairsNotValid) {
-            notifyService.showFooterStatus("Please fix the errors before adding a new pair.", NotificationType.ERROR, notificationFooter, notificationIcon, notificationText);
+            footerService.showFooterStatus("Please fix the errors before adding a new pair.", NotificationType.ERROR, notificationFooter, notificationIcon, notificationText);
             return;
         }
 
         addPair("", "");
-        notifyService.showFooterStatus("Added a new empty pair.", NotificationType.INFO, notificationFooter, notificationIcon, notificationText);
+        footerService.showFooterStatus("Added a new empty pair.", NotificationType.INFO, notificationFooter, notificationIcon, notificationText);
     }
 
     private void addPair(String key, String value) {
@@ -161,7 +165,7 @@ public class MainController {
         removeBtn.getStyleClass().addAll("button", "remove-button");
         removeBtn.setOnAction(e -> {
             pairsContainer.getChildren().remove(pairContainer);
-            notifyService.showFooterStatus("Removed a pair.", NotificationType.WARNING, notificationFooter, notificationIcon, notificationText);
+            footerService.showFooterStatus("Removed a pair.", NotificationType.WARNING, notificationFooter, notificationIcon, notificationText);
         });
 
         row.getChildren().addAll(keyField, valueField, removeBtn);
@@ -179,7 +183,7 @@ public class MainController {
     public void handleSavePairs() {
         boolean arePairsValid = this.pairValidationService.arePairsNotValid(pairsContainer);
         if (arePairsValid) {
-            notifyService.showFooterStatus("Please fix the errors before saving.", NotificationType.ERROR, notificationFooter, notificationIcon, notificationText);
+            footerService.showFooterStatus("Please fix the errors before saving.", NotificationType.ERROR, notificationFooter, notificationIcon, notificationText);
             return;
         }
 
@@ -212,9 +216,9 @@ public class MainController {
             for (String pair : pairs) {
                 writer.println(pair);
             }
-            notifyService.showFooterStatus("Successfully saved " + pairs.size() + " pairs.", NotificationType.SUCCESS, notificationFooter, notificationIcon, notificationText);
+            footerService.showFooterStatus("Successfully saved " + pairs.size() + " pairs.", NotificationType.SUCCESS, notificationFooter, notificationIcon, notificationText);
         } catch (IOException e) {
-            notifyService.showFooterStatus("Error saving pairs: " + e.getMessage(), NotificationType.ERROR, notificationFooter, notificationIcon, notificationText);
+            footerService.showFooterStatus("Error saving pairs: " + e.getMessage(), NotificationType.ERROR, notificationFooter, notificationIcon, notificationText);
             throw new CopyPasteAnonymizerException("1134_13072026", "Something happened when trying to show a notification:", e);
         }
     }
@@ -246,7 +250,7 @@ public class MainController {
     private void startClipboardMonitor() {
         clipboardMonitor = new SimpleClipboardMonitor(this::onClipboardChanged);
         clipboardMonitor.start();
-        notifyService.showFooterStatus("Clipboard monitoring started", NotificationType.SUCCESS, notificationFooter, notificationIcon, notificationText);
+        footerService.showFooterStatus("Clipboard monitoring started", NotificationType.SUCCESS, notificationFooter, notificationIcon, notificationText);
     }
 
     private void onClipboardChanged(String content) {
@@ -258,6 +262,20 @@ public class MainController {
 
         if (content.equals(lastProcessedContent.get())) {
             System.out.println("Skipping - this is content we just set");
+            return;
+        }
+
+        if (bidirectionalMode.isSelected() && isContentMixed(content)) {
+            String message = "At least one pair within content is present - can't accept mixed content.";
+            System.out.printf("[%s] %s", "1020_20102026", message);
+
+            Thread t = new Thread(() -> Platform.runLater(() -> {
+                footerService.showFooterStatus(message, NotificationType.ERROR, notificationFooter, notificationIcon, notificationText);
+                notifyService.showAnonymizationFailureMessage();
+            }));
+            t.setDaemon(true);
+            t.setName("MixedContentThread");
+            t.start();
             return;
         }
 
@@ -276,12 +294,12 @@ public class MainController {
                     clipboard.setContents(selection, null);
 
                     Platform.runLater(() -> {
-                        notifyService.showFooterStatus("Clipboard content anonymized", NotificationType.SUCCESS, notificationFooter, notificationIcon, notificationText);
+                        footerService.showFooterStatus("Clipboard content anonymized", NotificationType.SUCCESS, notificationFooter, notificationIcon, notificationText);
                         notifyService.showAnonymizationSuccessMessage();
                     });
                     Thread.sleep(200);
                 } catch (Exception e) {
-                    Platform.runLater(() -> notifyService.showFooterStatus("Error while updating clipboard", NotificationType.ERROR, notificationFooter, notificationIcon, notificationText));
+                    Platform.runLater(() -> footerService.showFooterStatus("Error while updating clipboard", NotificationType.ERROR, notificationFooter, notificationIcon, notificationText));
                     throw new CopyPasteAnonymizerException("1134_13072026", "Something happened when trying to update the clipboard:", e);
                 } finally {
                     clipboardMonitor.setProcessing(false);
@@ -289,12 +307,23 @@ public class MainController {
             });
 
             updater.setDaemon(true);
-            updater.setName("ClipboardUpdater");
+            updater.setName("ClipboardUpdaterThread");
             updater.start();
         } else {
             System.out.println("No replacement needed");
             lastProcessedContent.set(content);
         }
+    }
+
+    private boolean isContentMixed(String content) {
+        for (Pair<String, String> pair : replacementPairs) {
+            boolean leftContains = content.contains(pair.getKey());
+            boolean rightContains = content.contains(pair.getValue());
+            if (leftContains && rightContains) {
+                return true;
+            }
+        }
+        return false;
     }
 
     public void shutdown() {
